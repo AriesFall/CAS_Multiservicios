@@ -1,19 +1,19 @@
 async function loginUser(event) {
     event.preventDefault();
 
-    const correo = document.getElementById('correo').value;
-    const contrasena = document.getElementById('contrasena').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
     const errorMsg = document.getElementById('error-msg');
 
     try {
-        const response = await fetch(login_route, {
+        const response = await fetch(loginUser_route, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                correo,
-                contrasena
+                email,
+                password
             })
         });
 
@@ -28,17 +28,16 @@ async function loginUser(event) {
 
         // Almacena los datos en localStorage
         localStorage.setItem('token', result.token);
-        localStorage.setItem('nivelCuenta', result.nivelCuenta);
-        localStorage.setItem('correo', result.correo);
+        localStorage.setItem('role', result.role);
+        localStorage.setItem('email', result.email);
+        localStorage.setItem('fullName', result.fullName);
 
         // Verifica el nivel de cuenta y redirige al usuario
-        const nivelCuenta = parseInt(result.nivelCuenta);
-        if (nivelCuenta === 1) {
-            window.location.href = './Views/admin/index.html';
-        } else if (nivelCuenta === 2) {
-            window.location.href = './Views/teacher/index.html';
-        } else if (nivelCuenta === 3) {
-            window.location.href = './Views/user/index.html';
+        const role = parseInt(result.role);
+        if (role === 1) {
+            window.location.href = './Pages/index.html';
+        } else if (role === 2) {
+            window.location.href = './Pages/index.html';
         } else {
             throw new Error("Nivel de cuenta desconocido");
         }

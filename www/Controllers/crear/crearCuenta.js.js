@@ -1,21 +1,21 @@
 async function registerUser(event) {
   event.preventDefault();
   
-  const nombreCompleto = document.getElementById('nombreCompleto').value;
-  const correo = document.getElementById('correo').value;
-  const contrasena = document.getElementById('contrasena').value;
-  const nivelCuenta = 3;
+  const fullName = document.getElementById('fullName').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const role = 2;
 
-  const response = await fetch(createaccount_route, {
+  const response = await fetch(registerUser_route, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-          nombreCompleto,
-          correo,
-          contrasena,
-          nivelCuenta
+          fullName,
+          email,
+          password,
+          role
       })
   });
 

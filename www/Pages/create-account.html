@@ -22,6 +22,8 @@
       defer
     ></script>
     <script src="../js/init-alpine.js"></script>
+    <script src="../Controllers/routes.js"></script>
+    <script src="../Controllers/crear/crearCuenta.js.js"></script>
   </head>
   <body>
     <div class="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
@@ -50,57 +52,42 @@
               >
                 Crear cuenta
               </h1>
-              <label class="block text-sm">
-                <span class="text-gray-700 dark:text-gray-400">Nombre completo</span>
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                  placeholder=""
-                />
-              </label>
-              <label class="block mt-4 text-sm"> <!-- Aquí se agrega el mt-4 -->
-                <span class="text-gray-700 dark:text-gray-400">Correo electrónico</span>
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                  placeholder=""
-                />
-              </label>
-              <label class="block mt-4 text-sm">
-                <span class="text-gray-700 dark:text-gray-400">Contraseña</span>
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                  placeholder=""
-                  type="password"
-                />
-              </label>
-              <label class="block mt-4 text-sm">
-                <span class="text-gray-700 dark:text-gray-400">Confirmar contraseña</span>
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                  placeholder=""
-                  type="password"
-                />
-              </label>
-              <label class="block mt-4 text-sm"> <!-- Aquí se agrega el mt-4 -->
-                <span class="text-gray-700 dark:text-gray-400">Código de seguridad</span>
-                <input
-                  class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                  placeholder="######"
-                />
-              </label>
-              
-
-              <!-- You should use a button here, as the anchor is only used for the example  -->
-              <a
-                class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                href="./login.html"
-              >
-                Crear cuenta
-              </a>
+              <!-- Contenedor para el mensaje de cuenta creada exitosamente y error -->
+              <div id="success-message" class="hidden p-4 mb-4 text-sm text-white bg-green-500 rounded-lg"></div>
+              <div id="error-msg" class="hidden p-4 mb-4 text-sm text-white bg-red-500 rounded-lg"></div>
+              <form onsubmit="registerUser(event)">
+                <label class="block text-sm">
+                  <span class="select-none text-gray-700 dark:text-gray-400">Nombre completo</span>
+                  <input required id="fullName" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" placeholder="" />
+                </label>
+                <label class="block text-sm">
+                  <span class="select-none text-gray-700 dark:text-gray-400">Correo electronico</span>
+                  <input required id="email" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" placeholder="" type="email"/>
+                </label>
+                <label class="block mt-4 text-sm">
+                  <span class="select-none text-gray-700 dark:text-gray-400">Contraseña</span>
+                  <input required id="password" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" placeholder="" type="password" />
+                </label>
+                <label class="block mt-4 text-sm">
+                  <span class="select-none text-gray-700 dark:text-gray-400">Confirma tu contraseña</span>
+                  <input required class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" placeholder="" type="password" />
+                </label>
+                <label class="block mt-4 text-sm"> <!-- Aquí se agrega el mt-4 -->
+                  <span class="text-gray-700 dark:text-gray-400">Código de seguridad</span>
+                  <input
+                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                    placeholder="######"
+                  />
+                </label>
+                <button type="submit" class="select-none block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                  Crear cuenta
+                </button>
+              </form>
               <hr class="my-8" />
               <p class="mt-4">
                 <a
                   class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  href="../login.html"
+                  href="../index.html"
                 >
                   ¿Ya tienes cuenta? Inicia sesión
                 </a>

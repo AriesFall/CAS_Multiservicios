@@ -22,6 +22,7 @@
       defer
     ></script>
     <script src="../js/init-alpine.js"></script>
+    <script src="../Controllers/routes.js"></script>
   </head>
   <body>
     <div
@@ -87,7 +88,7 @@
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
                   ></path>
                 </svg>
-                <span class="ml-4">Forms</span>
+                <span class="ml-4">Cotizaciones</span>
               </a>
             </li>
             <li class="relative px-6 py-3">
@@ -342,7 +343,7 @@
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
                   ></path>
                 </svg>
-                <span class="ml-4">Forms</span>
+                <span class="ml-4">Cotizaciones</span>
               </a>
             </li>
             <li class="relative px-6 py-3">
@@ -504,7 +505,7 @@
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                   >
-                    <a class="w-full" href="pages/login.html">Login</a>
+                    <a class="w-full" href="pages/index.html">Login</a>
                   </li>
                   <li
                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
@@ -651,7 +652,7 @@
                     <li class="flex">
                       <a
                         class="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                        href="../login.html"
+                        href="../index.html"
                       >
                         <svg
                           class="w-4 h-4 mr-3"
@@ -677,11 +678,21 @@
           </div>
         </header>
         <main class="h-full overflow-y-auto">
+          <script>
+            // Obtener el nombre del usuario desde localStorage
+            const fullName = localStorage.getItem('fullName');
+            
+            // Mostrar el nombre completo en el HTML
+            document.addEventListener('DOMContentLoaded', () => {
+              const saludoElement = document.getElementById('userName');
+              saludoElement.textContent = `Hola, ${fullName}`;
+            });
+          </script>
           <div class="container px-6 mx-auto grid">
             <h2
+              id="userName"
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
-            Hola, Jesús Santos
             </h2>
             <!-- Cards -->
             <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
