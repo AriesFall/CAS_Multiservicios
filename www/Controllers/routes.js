@@ -1,9 +1,9 @@
 //Declare environment
 const local_server = "https://localhost:44303/api/"                         //Write localhost and port
-const public_server = "https://escrileapi.bsite.net/api/auth/"                        //Write WEB API public address
+const public_server = "http://apiescrile.somee.com/api/"                        //Write WEB API public address
 const local_sources = ""       //Write App local resources
 
-const env = local_server                                  //Select your environment (local or public server)
+const env = public_server                                  //Select your environment (local or public server)
 
 //Users API
 const allUsers_route = env + "user/users"
@@ -20,3 +20,10 @@ const signupUser_route = env + "Users/signup"
 const dataUser_route = env + "Users/"
 const totalUser_route = env + "Users/GetTotalUsers"
 */
+
+
+
+
+
+//Ruta de somee
+//http://apiescrile.somee.com/api/
