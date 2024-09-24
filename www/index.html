@@ -32,13 +32,12 @@
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
-        <meta name="color-scheme" content="light dark">
         <title>Iniciar sesión</title>
         <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet"
       />
-      <link rel="stylesheet" href="css/tailwind.output.css" />
+      <link rel="stylesheet" href="public/css/tailwind.output.css" />
       <style>
         body {
           user-select: none;
@@ -51,9 +50,9 @@
         src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
         defer
       ></script>
-      <script src="./js/init-alpine.js"></script>
-      <script src="./Controllers/routes.js"></script>  
-      <script src="./Controllers/independiente/login.js"></script>
+      <script src="public/js/init-alpine.js"></script>
+      <script src="Controllers/routes.js"></script>  
+      <script src="Controllers/login.js"></script>
     </head>
     <body>
         <div class="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
@@ -65,13 +64,13 @@
                 <img
                   aria-hidden="true"
                   class="object-cover w-full h-full dark:hidden"
-                  src="img/login-office.jpeg"
+                  src="public/img/login-office.jpeg"
                   alt="Office"
                 />
                 <img
                   aria-hidden="true"
                   class="hidden object-cover w-full h-full dark:block"
-                  src="img/login-office-dark.jpeg"
+                  src="public/img/login-office-dark.jpeg"
                   alt="Office"
                 />
               </div>
@@ -101,7 +100,7 @@
                   <p class="mt-1">
                     <a
                       class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                      href="Pages/create-account.html"
+                      href="Views/create-account.html"
                     >
                       Crear cuenta
                     </a>
@@ -111,7 +110,5 @@
             </div>
           </div>
         </div>
-        <script src="cordova.js"></script>
-        <script src="js/index.js"></script>
     </body>
 </html>
