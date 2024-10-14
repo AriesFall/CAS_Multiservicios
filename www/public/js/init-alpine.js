@@ -44,14 +44,16 @@ function data() {
     },
     isModalOpen: false,
     trapCleanup: null,
-    isAddUserModalOpen: false,
-    isEditUserModalOpen: false,
-    isDeleteUserModalOpen: false,
-    isJoinClassModalOpen: false,
-    editUserId: null,
-    editUsername: '',
-    editUserEmail: '',
-    editUserAccountLevel: '1', // Por defecto es Administrador
+    isAddClientModalOpen: false,
+    isEditClientModalOpen: false,
+    isDeleteClientModalOpen: false,
+    editClientId: null,
+    editClientCompanyName: '',
+    editClientManager: '',
+    editClientEmail: '',
+    editClientPhoneNumber: '',
+    editClientFileInput: '',
+    editClientFileName: '',
     openModal() {
       this.isModalOpen = true;
       this.trapCleanup = focusTrap(document.querySelector('#modal'));
@@ -60,116 +62,148 @@ function data() {
       this.isModalOpen = false;
       document.getElementById('nombreClase').value = '';
     },
-    openAddUserModal() {
-      this.isAddUserModalOpen = true;
+    openAddClientModal() {
+      this.isAddClientModalOpen = true;
     },
-    closeAddUserModal() {
-      this.isAddUserModalOpen = false;
-      document.getElementById('fullName').value = '';
+    closeAddClientModal() {
+      this.isAddClientModalOpen = false;
+      document.getElementById('companyName').value = '';
+      document.getElementById('manager').value = '';
       document.getElementById('email').value = '';
-      document.getElementById('password').value = '';
-      document.getElementById('confirmPassword').value = '';
-      document.getElementById('accountLevel').value = 'Selecciona....';
+      document.getElementById('phoneNumber').value = '';
+      document.getElementById('file-input').value = '';
+      document.getElementById('file-name').value = '';
     },
-    async openEditUserModal(userId) {
-      this.editUserId = userId;
-      const response = await fetch(showUserWithId_route + userId);
-      const user = await response.json();
-      this.editUsername = user.NombreCompleto;
-      this.editUserEmail = user.Correo;
-      this.editUserAccountLevel = user.NivelCuenta.toString(); // Asegúrate de que el nivel se mantenga como string
-      this.isEditUserModalOpen = true;
-    },    
-    closeEditUserModal() {
-      this.isEditUserModalOpen = false;
-    },
-    async handleEditUser(event) {
-      event.preventDefault(); // Para evitar el comportamiento por defecto del formulario
-      const user = {
-        Id: this.editUserId,
-        NombreCompleto: this.editUsername,
-        Correo: this.editUserEmail,
-        NivelCuenta: parseInt(this.editUserAccountLevel, 10)
-      };
-
-      // Verifica si la información no ha cambiado
-      const currentResponse = await fetch(showUserWithId_route + this.editUserId);
-      const currentUser = await currentResponse.json();
-
-      if (
-        currentUser.NombreCompleto === user.NombreCompleto &&
-        currentUser.Correo === user.Correo &&
-        currentUser.NivelCuenta === user.NivelCuenta
-      ) {
-        // Mostrar mensaje de error
-        const cambiarerrorMsg = document.getElementById('cambiar-error-msg');
-        cambiarerrorMsg.textContent = "Necesitas modificar el usuario, no se han realizado cambios";
-        cambiarerrorMsg.classList.remove('hidden');
-
-        // Ocultar el mensaje de éxito después de 30 segundos
-        setTimeout(() => {
-            cambiarerrorMsg.classList.add('hidden');
-        }, 5000);
-        return; // Detener el proceso de actualización
+    async openEditClientModal(clientId) {
+      this.editClientId = clientId;
+      const response = await fetch(allClients_route);
+      
+      if (response.ok) {
+        const clients = await response.json();
+        
+        const client = clients.find(c => c.Id === clientId);
+        
+        if (client) {
+          this.editClientCompanyName = client.CompanyName;
+          this.editClientManager = client.Manager;
+          this.editClientEmail = client.Email; // Guarda el correo actual antes de editarlo
+          this.previousEmail = client.Email;   // Almacena el correo anterior para manejar el cambio de imagen
+          this.editClientPhoneNumber = client.PhoneNumber;
+          
+          this.isEditClientModalOpen = true;
+        } else {
+          console.error('Client not found');
+        }
+      } else {
+        console.error('Failed to fetch clients');
       }
-
-      const response = await fetch(editUserWithId_route + this.editUserId, {
+    },
+    closeEditClientModal() {
+      this.isEditClientModalOpen = false;
+    },
+    async handleEditClient(event) {
+      event.preventDefault(); // Evitar el comportamiento por defecto del formulario
+    
+      const client = {
+        Id: this.editClientId,
+        CompanyName: this.editClientCompanyName,
+        Manager: this.editClientManager,
+        Email: this.editClientEmail,
+        PhoneNumber: this.editClientPhoneNumber,
+      };
+    
+      // Obtener el cliente actual
+      const currentResponse = await fetch(allClients_route);
+      const clients = await currentResponse.json();
+      const currentClient = clients.find(c => c.Id === this.editClientId);
+    
+      const fileInput = document.getElementById('file-input');
+      const newImageFile = fileInput.files.length > 0; // Verificar si hay nueva imagen
+    
+      // Si no hay cambios y no se ha subido una nueva imagen, mostrar mensaje de error
+      if (
+        currentClient.CompanyName === client.CompanyName &&
+        currentClient.Manager === client.Manager &&
+        currentClient.Email === client.Email &&
+        currentClient.PhoneNumber === client.PhoneNumber &&
+        !newImageFile
+      ) {
+        const cambiarErrorMsg = document.getElementById('cambiar-error-msg');
+        cambiarErrorMsg.textContent = "Necesitas modificar algo, no se han realizado cambios";
+        cambiarErrorMsg.classList.remove('hidden');
+    
+        setTimeout(() => {
+          cambiarErrorMsg.classList.add('hidden');
+        }, 5000);
+        return;
+      }
+    
+      // Si el correo ha cambiado, eliminar la imagen anterior y subir la nueva (si aplica)
+      if (currentClient.Email !== client.Email || newImageFile) {
+        const oldFileName = `${currentClient.Email}.jpg`;
+    
+        // Eliminar la imagen anterior
+        await fetch(deleteImg_route, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ fileName: oldFileName }),
+        });
+    
+        // Si hay una nueva imagen, súbela con el nuevo correo
+        if (newImageFile) {
+          const formData = new FormData();
+          formData.append('file', fileInput.files[0], `${client.Email}.jpg`); // Usa el nuevo correo para la imagen
+    
+          await fetch(uploadImg_route, {
+            method: 'POST',
+            body: formData,
+          });
+        }
+      }
+    
+      // Actualiza los datos del cliente (si hubo cambios)
+      await fetch(editClient_route + client.Id, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Asegúrate de que el token esté en localStorage
         },
-        body: JSON.stringify(user)
+        body: JSON.stringify(client),
       });
-
-      if (response.ok) {
-        this.closeEditUserModal();
-        // Mostrar mensaje de éxito temporalmente
-        const editarsuccessMessage = document.getElementById('editar-success-message');
-        editarsuccessMessage.textContent = "El usuario se ha editado correctamente";
-        editarsuccessMessage.classList.remove('hidden');
-
-        // Ocultar el mensaje de éxito después de 30 segundos
-        setTimeout(() => {
-            editarsuccessMessage.classList.add('hidden');
-        }, 10000);
-
-        mostrarUsuarios();
-      } else {
-        // Mostrar mensaje de error
-        const editarerrorMsg = document.getElementById('editar-error-msg');
-        editarerrorMsg.textContent = "Ya existe un usuario con el correo que estás ingresando";
-        editarerrorMsg.classList.remove('hidden');
-
-        // Ocultar el mensaje de éxito después de 30 segundos
-        setTimeout(() => {
-            editarerrorMsg.classList.add('hidden');
-        }, 10000);
-      }
+    
+      // Mostrar mensaje de éxito
+      const successMsg = document.getElementById('editar-success-msg');
+      successMsg.textContent = "Cambios guardados exitosamente";
+      successMsg.classList.remove('hidden');
+    
+      setTimeout(() => {
+        successMsg.classList.add('hidden');
+        this.closeEditClientModal(); // Cerrar el modal
+      }, 5000);
+    },           
+    openDeleteClientModal(clientId) {
+      this.deleteClientId = clientId;
+      this.isDeleteClientModalOpen = true;
     },
-    openDeleteUserModal(userId) {
-      this.deleteUserId = userId;
-      this.isDeleteUserModalOpen = true;
+    closeDeleteClientModal() {
+      this.isDeleteClientModalOpen = false;
+      this.deleteClientId = null; // Limpiar el ID al cerrar el modal
     },
-    closeDeleteUserModal() {
-      this.isDeleteUserModalOpen = false;
-      this.deleteUserId = null; // Limpiar el ID al cerrar el modal
-    },
-    async handleDeleteUser() {
-      if (!this.deleteUserId) {
-        alert('No se ha seleccionado ningún usuario para eliminar');
+    async handleDeleteClient() {
+      if (!this.deleteClientId) {
         return;
       }
 
-      const response = await fetch(deleteUserWithId_route + this.deleteUserId, {
+      const response = await fetch(deleteClient_route + this.deleteClientId, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Asegúrate de que el token esté en localStorage
+          'Content-Type': 'application/json'
         }
       });
 
       if (response.ok) {
-        this.closeDeleteUserModal();
+        this.closeDeleteClientModal();
         // Mostrar mensaje de éxito temporalmente
         const eliminarsuccessMessage = document.getElementById('eliminar-success-message');
         eliminarsuccessMessage.textContent = "El usuario se elimino correctamente";
@@ -178,17 +212,10 @@ function data() {
         // Ocultar el mensaje de éxito después de 30 segundos
         setTimeout(() => {
             eliminarsuccessMessage.classList.add('hidden');
-        }, 10000);
+        }, 5000);
 
-        mostrarUsuarios();
+        fetchClients();
       }
-    },
-    openJoinClassModal() {
-      this.isJoinClassModalOpen = true;
-    },
-    closeJoinClassModal() {
-      this.isJoinClassModalOpen = false;
-      document.getElementById('codigoClase').value = '';
     },
     logout() {
       logout();
