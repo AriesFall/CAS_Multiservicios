@@ -141,12 +141,23 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (filteredQuote) {
             const tableBody = document.getElementById("quotesTableBody");
 
+            // Calcular el subtotal
             const subtotal = filteredQuote.Price * filteredQuote.Amount;
 
+            // Calcular IVA
             const ivaPercentage = filteredQuote.PercentageIVA;
             const ivaAmount = (subtotal * ivaPercentage) / 100;
 
-            const totalInclIVA = subtotal + ivaAmount;
+            // Calcular Retención ISR (10% como ejemplo)
+            const isrPercentage = 10; // Define el porcentaje de ISR
+            const isrRetention = (subtotal * isrPercentage) / 100;
+
+            // Calcular Retención IVA (6% como ejemplo)
+            const retIvaPercentage = 2 / 3; // Define el porcentaje de Ret IVA
+            const retIvaAmount = (ivaAmount * retIvaPercentage);
+
+            // Calcular el total incluyendo IVA y restando retenciones
+            const totalInclIVA = subtotal + ivaAmount - isrRetention - retIvaAmount;
 
             const row = `
                 <tr style="height:41.5pt">
@@ -173,10 +184,12 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             tableBody.innerHTML = row;
 
-            document.getElementById("totalPrice").innerText = `$${subtotal.toFixed(2)}`;
+            // Mostrar valores en el resumen
             document.getElementById("subtotal").innerText = `$${subtotal.toFixed(2)}`;
-            document.getElementById("ivaPercentage").innerText = `${ivaPercentage}`;
+            document.getElementById("ivaPercentage").innerText = `${ivaPercentage}%`;
             document.getElementById("ivaAmount").innerText = `$${ivaAmount.toFixed(2)}`;
+            document.getElementById("isr").innerText = `$${isrRetention.toFixed(2)}`;
+            document.getElementById("retiva").innerText = `$${retIvaAmount.toFixed(2)}`;
             document.getElementById("totalInclIVA").innerText = `$${totalInclIVA.toFixed(2)}`;
         } else {
             console.error("No se encontró ninguna cotización con el clientId y quoteId especificados.");

@@ -28,11 +28,22 @@ function populateTable(quote) {
     const tableBody = document.querySelector('table tbody');
     tableBody.innerHTML = '';
 
+    // Cálculos
     const subtotal = quote.Price * quote.Amount;
     const ivaPercentage = quote.PercentageIVA;
     const ivaAmount = (subtotal * ivaPercentage) / 100;
-    const totalPrice = subtotal + ivaAmount;
 
+    // Retenciones (porcentajes de ejemplo, ajusta según sea necesario)
+    const retISRPercentage = 10; // Porcentaje de retención ISR
+    const retIVAPercentage = 2 / 3;  // Porcentaje de retención IVA
+
+    const retISR = (subtotal * retISRPercentage) / 100;
+    const retIVA = (ivaAmount * retIVAPercentage);
+
+    // Precio total ajustado con IVA y retenciones
+    const totalPrice = subtotal + ivaAmount - retISR - retIVA;
+
+    // Fila de la tabla con los datos de la cotización
     const rowHTML = `
         <tr class="bg-white dark:bg-gray-800">
             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">1</th>
@@ -46,6 +57,7 @@ function populateTable(quote) {
 
     tableBody.innerHTML = rowHTML;
 
+    // Pie de tabla con los totales
     const tableFooter = document.querySelector('table tfoot');
     tableFooter.innerHTML = `
         <tr class="font-semibold text-gray-900 dark:text-white">
@@ -69,7 +81,23 @@ function populateTable(quote) {
             <td class="px-6 py-3"></td>
             <td class="px-6 py-3"></td>
             <td class="px-6 py-3"></td>
-            <th scope="row" class="px-6 py-3 text-base">Precio Total (incl. IVA)</th>
+            <th scope="row" class="px-6 py-3 text-base">Ret. ISR</th>
+            <td class="px-6 py-3">$${retISR.toFixed(2)}</td>
+        </tr>
+        <tr class="font-semibold text-gray-900 dark:text-white">
+            <th scope="row" class="px-6 py-3 text-base"></th>
+            <td class="px-6 py-3"></td>
+            <td class="px-6 py-3"></td>
+            <td class="px-6 py-3"></td>
+            <th scope="row" class="px-6 py-3 text-base">Ret. IVA</th>
+            <td class="px-6 py-3">$${retIVA.toFixed(2)}</td>
+        </tr>
+        <tr class="font-semibold text-gray-900 dark:text-white">
+            <th scope="row" class="px-6 py-3 text-base"></th>
+            <td class="px-6 py-3"></td>
+            <td class="px-6 py-3"></td>
+            <td class="px-6 py-3"></td>
+            <th scope="row" class="px-6 py-3 text-base">Precio Total (Incl. IVA y Retenciones)</th>
             <td class="px-6 py-3">$${totalPrice.toFixed(2)}</td>
         </tr>
     `;
@@ -183,7 +211,7 @@ async function changeStatus(event) {
             const result = await response.json();
             
             // Redirige a la ruta especificada
-            window.location.href = `../cotizacion-vista2.html?clientId=${clientId}&quoteId=${quoteId}`;
+            window.location.href = `../cotizacion-vista3.html?clientId=${clientId}&quoteId=${quoteId}`;
             //`../pdfFormat.html?clientId=${clientId}&quoteId=${quoteId}`;
         } else {
             const error = await response.json();

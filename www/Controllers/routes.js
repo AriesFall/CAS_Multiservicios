@@ -16,6 +16,7 @@ const showUserWithId_route = env + "api/user/user/"
 //Clients API
 const allClients_route = env + "api/client/clients"
 const addClient_route = env + "api/client/register"
+const addGuest_route = env + "api/client/guest"
 const editClient_route = env + "api/client/editClient/"
 const deleteClient_route = env + "api/client/deleteClient/"
 const uploadImg_route = env + "api/client/uploadImage"
@@ -26,6 +27,10 @@ const viewImg_route = env + "imgCot/"
 const allQuotes_route = env + "api/quote/quotes"
 const addQuote_route = env + "api/quote/register"
 const editQuote_route = env + "api/quote/update/"
+
+//Catalog API
+const allCatalog_route = env + "api/catalog/catalogs"
+const searchInCatalog_route = env + "api/catalog/search"
 
 
 //Ejemplo de rutas API

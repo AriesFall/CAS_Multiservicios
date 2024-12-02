@@ -43,7 +43,7 @@ async function addClient(event) {
         if (!response.ok) {
             // Mostrar mensaje de error
             const errorMsg = document.getElementById('error-msg');
-            errorMsg.textContent = "Ya existe un usuario con el correo que estás ingresando";
+            errorMsg.textContent = "Ya existe un cliente con el correo que estás ingresando";
             errorMsg.classList.remove('hidden');
 
             // Ocultar el mensaje de éxito después de 30 segundos
@@ -80,7 +80,7 @@ async function addClient(event) {
 
             // Mostrar mensaje de éxito temporalmente
             const successMessage = document.getElementById('success-message');
-            successMessage.textContent = "Usuario creado exitosamente";
+            successMessage.textContent = "Cliente creado exitosamente";
             successMessage.classList.remove('hidden');
 
             // Ocultar el mensaje de éxito después de 30 segundos

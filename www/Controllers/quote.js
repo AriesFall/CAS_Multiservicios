@@ -1,92 +1,144 @@
-async function createQuote(event) {
-    event.preventDefault();
+let choices;
 
-    const productServiceName = document.getElementById('productServiceName').value;
-    const typeQuote = document.getElementById('typeQuote').value;
-    const price = document.getElementById('price').value;
-    const percentageIVA = document.getElementById('percentageIVA').value;
-    const currency = document.getElementById('currency').value;
-    const noCode = document.getElementById('noCode').value;
-    const clientId = new URLSearchParams(window.location.search).get('clientId');
+document.addEventListener("DOMContentLoaded", function () {
+    const selectElement = document.getElementById("noCode");
 
-    const quoteData = {
-        quoteName: "COT 0000-CMS0924",
-        status: 1,
-        typeQuote: parseInt(typeQuote),
-        clientId,
-        productServiceName,
-        noCode,
-        price: parseFloat(price),
-        currency: parseInt(currency),
-        percentageIVA: parseInt(percentageIVA)
+    choices = new Choices(selectElement, {
+        searchEnabled: true,
+        itemSelectText: '',
+        removeItemButton: true,
+        searchResultLimit: 1000,
+        renderChoiceLimit: 1000
+    });
+
+    const searchCatalog = async (query) => {
+        try {
+            if (query.length < 2) return;
+
+            const response = await fetch(`${searchInCatalog_route}?query=${encodeURIComponent(query)}&limit=10`);
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            selectElement.innerHTML = '<option value="">Selecciona una opción</option>';
+
+            choices.clearChoices();
+            choices.setChoices(data.map(catalog => ({
+                value: catalog.Code,
+                label: catalog.ProductService,
+                selected: false
+            })), 'value', 'label', false);
+
+        } catch (error) {
+            console.error("Error al realizar la búsqueda:", error);
+        }
     };
 
-    try {
-        const response = await fetch(addQuote_route, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(quoteData)
-        });
+    selectElement.addEventListener("search", function (event) {
+        searchCatalog(event.detail.value);
+    });
+});
 
-        if (!response.ok) {
-            throw new Error('Error en la solicitud: ' + response.statusText);
-        }
 
-        const result = await response.json();
-        console.log('Cotización registrada:', result);
+async function createQuote(event) {
+  event.preventDefault();
 
-        const quoteId = result.id;
-        window.location.href = `cotizacion-vista2.html?clientId=${clientId}&quoteId=${quoteId}`;
+  const productServiceName = document.getElementById('productServiceName').value;
+  const typeQuote = document.getElementById('typeQuote').value;
+  const price = document.getElementById('price').value;
+  const amount = document.getElementById('amount').value;
+  const percentageIVA = document.getElementById('percentageIVA').value;
+  const currency = document.getElementById('currency').value;
+  const noCode = choices.getValue(true);
+  const clientId = new URLSearchParams(window.location.search).get('clientId');
 
-    } catch (error) {
-        console.error('Error:', error);
-    }
+  if (!noCode) {
+      alert('Por favor selecciona un código válido.');
+      return;
+  }
+
+  const quoteData = {
+      quoteName: "COT 0000-CMS0924",
+      status: 1,
+      typeQuote: parseInt(typeQuote),
+      clientId,
+      productServiceName,
+      noCode,
+      price: parseFloat(price),
+      amount: parseInt(amount),
+      currency: parseInt(currency),
+      percentageIVA: parseInt(percentageIVA),
+  };
+
+  try {
+      const response = await fetch(addQuote_route, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(quoteData),
+      });
+
+      if (!response.ok) {
+          throw new Error('Error en la solicitud: ' + response.statusText);
+      }
+
+      const result = await response.json();
+      console.log('Cotización registrada:', result);
+
+      const quoteId = result.id;
+
+      if (typeQuote === '1') {
+          window.location.href = `cotizacion-vista2.html?clientId=${clientId}&quoteId=${quoteId}`;
+      } else if (typeQuote === '2') {
+          window.location.href = `cotizacion-vista3.html?clientId=${clientId}&quoteId=${quoteId}`;
+      } else {
+          console.error('Valor inesperado para typeQuote:', typeQuote);
+      }
+  } catch (error) {
+      console.error('Error:', error);
+  }
 }
+
 
 async function loadQuotesTable() {
     try {
-      // Obtener todas las cotizaciones y clientes
       const quotesResponse = await fetch(allQuotes_route);
       const clientsResponse = await fetch(allClients_route);
       
       const quotes = await quotesResponse.json();
       const clients = await clientsResponse.json();
       
-      // Crear un mapa de clientes por ID para búsqueda rápida
       const clientsMap = {};
       clients.forEach(client => {
         clientsMap[client.Id] = client;
       });
   
-      // Ordenar cotizaciones por fecha de más reciente a más antigua
       quotes.sort((a, b) => {
         const [dayA, monthA, yearA] = a.Date.split("/").map(Number);
         const [dayB, monthB, yearB] = b.Date.split("/").map(Number);
-        const dateA = new Date(yearA + 2000, monthA - 1, dayA); // Ajuste para año corto
+        const dateA = new Date(yearA + 2000, monthA - 1, dayA);
         const dateB = new Date(yearB + 2000, monthB - 1, dayB);
         return dateB - dateA;
       });
-  
-      // Seleccionar el cuerpo de la tabla
+
       const tableBody = document.getElementById("quotes-table-body");
-      tableBody.innerHTML = ""; // Limpiar la tabla antes de llenarla
+      tableBody.innerHTML = "";
   
       quotes.forEach(quote => {
         const client = clientsMap[quote.ClientId];
-        if (!client) return; // Saltar si no se encuentra el cliente
+        if (!client) return;
   
-        // Definir información de cliente basada en el rol
         const clientName = client.Role === 1 ? client.CompanyName : client.Manager;
         const clientRoleDetail = client.Role === 1 ? client.Manager : "";
   
-        // Definir ruta de imagen basada en el rol del cliente
         const clientImageSrc = client.Role === 1 
           ? `${viewImg_route + client.Email}.jpg` 
           : "../public/img/guess.jpg";
   
-        // Definir estado en texto y color
         let statusText = "";
         let statusClass = "";
         switch (quote.Status) {
@@ -108,7 +160,6 @@ async function loadQuotesTable() {
             break;
         }
   
-        // Crear la fila de la tabla
         const row = document.createElement("tr");
         row.classList.add("text-gray-700", "dark:text-gray-400");
   
@@ -143,7 +194,6 @@ async function loadQuotesTable() {
           </td>
         `;
   
-        // Añadir la fila a la tabla
         tableBody.appendChild(row);
       });
     } catch (error) {
@@ -151,6 +201,5 @@ async function loadQuotesTable() {
     }
   }
   
-  // Llamar a la función para cargar la tabla al cargar la página
   document.addEventListener("DOMContentLoaded", loadQuotesTable);
   

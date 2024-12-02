@@ -68,7 +68,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-
 // Función para mostrar las cotizaciones en la página actual
 function displayPage(page) {
     const quoteContainer = document.getElementById("showQuotes");
@@ -78,12 +77,23 @@ function displayPage(page) {
     const end = start + rowsPerPage;
     const quotesToDisplay = filteredQuotes.slice(start, end);
 
-    const clientIdFromURL = new URLSearchParams(window.location.search).get('clientId'); 
+    const clientIdFromURL = new URLSearchParams(window.location.search).get('clientId');
 
-    quotesToDisplay.forEach(({ QuoteName, Price, Date, Id }) => {
+    quotesToDisplay.forEach(({ QuoteName, Price, Date, Id, TypeQuote }) => {
         const quoteElement = document.createElement("a");
-        // Aquí se incluye tanto clientId como quoteId en la URL
-        quoteElement.href = `./approved2.html?clientId=${clientIdFromURL}&quoteId=${Id}`; 
+
+        // Verifica el tipo de cotización (TypeQuote) y asigna la URL correspondiente
+        let destinationURL = '';
+        if (TypeQuote === 1) {
+            destinationURL = `./approved2.html?clientId=${clientIdFromURL}&quoteId=${Id}`;
+        } else if (TypeQuote === 2) {
+            destinationURL = `./approved3.html?clientId=${clientIdFromURL}&quoteId=${Id}`;
+        } else {
+            console.error(`Tipo de cotización desconocido para Quote ID: ${Id}`);
+            return; // Si el tipo no es válido, no muestra el enlace
+        }
+
+        quoteElement.href = destinationURL;
         quoteElement.classList.add("flex", "items-center", "bg-white", "border", "border-gray-200", "rounded-lg", "shadow", "w-full", "md:w-1/3", "lg:w-1/4", "hover:bg-gray-100", "dark:border-gray-700", "dark:bg-gray-800", "dark:hover:bg-gray-700", "mb-4");
 
         quoteElement.innerHTML = `

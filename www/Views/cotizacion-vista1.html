@@ -9,6 +9,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../public/css/tailwind.output.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
       body {
         user-select: none;
@@ -23,6 +24,9 @@
     ></script>
     <script src="../public/js/init-alpine.js"></script>
     <script src="../Controllers/routes.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
     <script src="../Controllers/quote.js"></script>
     <script src="../Controllers/show/showClientName.js"></script>
   </head>
@@ -655,6 +659,18 @@
                     />
                 </div>
             </label>
+
+            <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">Cantidad:</span>
+                <input
+                    id="amount"
+                    name="amount"
+                    type="number"
+                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                    placeholder=""
+                    required
+                />
+            </label>
         
             <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">IVA:</span>
@@ -675,13 +691,11 @@
             </label>
         
             <label class="block mt-4 text-sm">
-              <span class="text-gray-700 dark:text-gray-400">No. Articulo:</span>
-              <select id="noCode" name="noCode" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray" required>
-                  <option value="">Selecciona una opción</option>
-                  <option value="62394628">Computadora</option> <!-- 1 para pesos -->
-                  <option value="92056346">Laptop</option> <!-- 2 para dólares -->
-              </select>
-          </label>
+                <span class="text-gray-700 dark:text-gray-400">No. Articulo:</span>
+                <select id="noCode" name="noCode" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+                    <option value="">Selecciona una opción</option>
+                </select>
+            </label>          
         
             <div class="flex mt-6 text-sm">
                 <label class="flex items-center dark:text-gray-400">
