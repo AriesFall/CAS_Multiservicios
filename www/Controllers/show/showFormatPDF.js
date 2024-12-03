@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const clientNameElement = document.getElementById('ClientName');
         if (client) {
             // Asigna directamente el Manager al elemento sin hacer más comparaciones
-            clientNameElement.textContent = client.Manager;
+            clientNameElement.textContent = `Cliente: ${client.Manager}`;
         } else {
             clientNameElement.textContent = 'Client not found';
         }
@@ -52,9 +52,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const clientNameElement = document.getElementById('CompanyClient');
         if (client) {
             if (client.Role === 1) {
-                clientNameElement.textContent = client.CompanyName;
+                clientNameElement.textContent = `Empresa: ${client.CompanyName}`;
             } else {
-                clientNameElement.textContent = client.Manager;
+                clientNameElement.textContent = "Empresa: N/A";
             }
         } else {
             clientNameElement.textContent = 'Client not found';
@@ -62,6 +62,76 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         console.error('Error fetching clients:', error);
         document.getElementById('CompanyClient').textContent = 'Error fetching client data';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clientId = urlParams.get('quoteId');
+
+    if (!clientId) {
+        document.getElementById('currency').textContent = 'Client ID not found';
+        return;
+    }
+
+    try {
+        const response = await fetch(allQuotes_route);
+        if (!response.ok) {
+            throw new Error('Failed to fetch clients');
+        }
+
+        const clients = await response.json();
+
+        const client = clients.find(c => c.Id === clientId);
+
+        const clientNameElement = document.getElementById('currency');
+        if (client) {
+            if (client.Currency === 1) {
+                clientNameElement.innerHTML = "<strong>Moneda:</strong> Pesos Mexicanos (MXN)";
+            } else {
+                clientNameElement.innerHTML = "<strong>Moneda:</strong> Dólar Estadounidense (USD)";
+            }
+        } else {
+            clientNameElement.textContent = 'Client not found';
+        }
+    } catch (error) {
+        console.error('Error fetching clients:', error);
+        document.getElementById('currency').textContent = 'Error fetching client data';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clientId = urlParams.get('quoteId');
+
+    if (!clientId) {
+        document.getElementById('currency2').textContent = 'Client ID not found';
+        return;
+    }
+
+    try {
+        const response = await fetch(allQuotes_route);
+        if (!response.ok) {
+            throw new Error('Failed to fetch clients');
+        }
+
+        const clients = await response.json();
+
+        const client = clients.find(c => c.Id === clientId);
+
+        const clientNameElement = document.getElementById('currency2');
+        if (client) {
+            if (client.Currency === 1) {
+                clientNameElement.textContent = "Precios en pesos mexicanos, sujetos a cambios sin previo aviso.";
+            } else {
+                clientNameElement.textContent = "Precios en dólares estadunidenses, sujetos a cambios sin previo aviso.";
+            }
+        } else {
+            clientNameElement.textContent = 'Client not found';
+        }
+    } catch (error) {
+        console.error('Error fetching clients:', error);
+        document.getElementById('currency2').textContent = 'Error fetching client data';
     }
 });
 

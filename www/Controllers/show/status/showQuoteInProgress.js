@@ -78,27 +78,45 @@ function displayPage(page) {
 
     const clientIdFromURL = new URLSearchParams(window.location.search).get('clientId');
 
-    quotesToDisplay.forEach(({ QuoteName, Price, Date, Id, TypeQuote }) => {
+    quotesToDisplay.forEach(({ QuoteName, Price, Amount, Date, Id, TypeQuote }) => {
         const quoteElement = document.createElement("a");
 
         // Verifica el tipo de cotización (TypeQuote) y asigna la URL correspondiente
         let destinationURL = '';
         if (TypeQuote === 1) {
-            destinationURL = `./in-progress2.html?clientId=${clientIdFromURL}&quoteId=${Id}`;
+            destinationURL = `./approved2.html?clientId=${clientIdFromURL}&quoteId=${Id}`;
         } else if (TypeQuote === 2) {
-            destinationURL = `./in-progress3.html?clientId=${clientIdFromURL}&quoteId=${Id}`;
+            destinationURL = `./approved3.html?clientId=${clientIdFromURL}&quoteId=${Id}`;
         } else {
             console.error(`Tipo de cotización desconocido para Quote ID: ${Id}`);
             return; // Si el tipo no es válido, no muestra el enlace
         }
 
+        const totalQuotePrice = (Price * Amount).toFixed(2); // Calcula el precio total de la cotización
+
         quoteElement.href = destinationURL;
-        quoteElement.classList.add("flex", "items-center", "bg-white", "border", "border-gray-200", "rounded-lg", "shadow", "w-full", "md:w-1/3", "lg:w-1/4", "hover:bg-gray-100", "dark:border-gray-700", "dark:bg-gray-800", "dark:hover:bg-gray-700", "mb-4");
+        quoteElement.classList.add(
+            "flex",
+            "items-center",
+            "bg-white",
+            "border",
+            "border-gray-200",
+            "rounded-lg",
+            "shadow",
+            "w-full",
+            "md:w-1/3",
+            "lg:w-1/4",
+            "hover:bg-gray-100",
+            "dark:border-gray-700",
+            "dark:bg-gray-800",
+            "dark:hover:bg-gray-700",
+            "mb-4"
+        );
 
         quoteElement.innerHTML = `
             <div class="flex flex-col justify-between p-4 leading-normal w-full">
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">${QuoteName}</h5>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Cotización de $${Price.toFixed(2)} generada el ${Date}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Cotización de $${totalQuotePrice} generada el ${Date}</p>
             </div>
         `;
         quoteContainer.appendChild(quoteElement);

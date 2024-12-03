@@ -3,7 +3,7 @@ const local_server = "https://localhost:44303/"                             //Wr
 const public_server = "http://apiescrile.somee.com/"                        //Write WEB API public address
 const local_sources = ""       //Write App local resources
 
-const env = local_server                                  //Select your environment (local or public server)
+const env = public_server                                  //Select your environment (local or public server)
 
 //Users API
 const allUsers_route = env + "api/user/users"

@@ -21,9 +21,9 @@ async function loadClientsAndQuotes() {
             // Calcula el totalPrice solo con las cotizaciones filtradas
             const totalPrice = clientQuotes.reduce((acc, quote) => {
                 const price = parseFloat(quote.Price);
-                return acc + (isNaN(price) ? 0 : price);
+                const amount = parseInt(quote.Amount, 10);
+                return acc + ((isNaN(price) || isNaN(amount)) ? 0 : price * amount);
             }, 0);
-
             return { ...client, totalPrice };
         });
 

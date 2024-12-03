@@ -7,15 +7,37 @@
     <script src="../Controllers/show/showFormatPDF2.js"></script>
 </head>
 <div>
-    <p class="Header">
-        <img src="../public/img/CASMultiservicios_Logo.jpg" width="77" height="43" alt="" style="margin-right:9pt; margin-left:9pt; position:left; position:relative" />
-    </p>
+    <style>
+        @media print {
+            .print-line {
+                display: block !important; /* Asegura su visibilidad */
+                border-top: 1px solid #000 !important; /* Usa un borde en lugar de background */
+                width: 100% !important; /* Asegura que ocupe todo el ancho */
+                margin: 0px 0 !important;
+                height: 0; /* No necesita altura porque el borde lo simula */
+            }
+        }
+        </style>
+        
+        <div>
+            <p class="Header" style="text-align: left; position: relative;">
+                <img 
+                    src="../public/img/CAS_MULTISERVICIOS_LOGO_v1.0-LIGHT.png" 
+                    width="77" 
+                    height="43" 
+                    alt="" 
+                    style="margin-left: 450pt; position: relative;" 
+                />
+            </p>
+        </div>
+        <span class="print-line"></span>
+        
 </div>
 <span style="display: block; height: 1px; background-color: #000; margin: 0px 0; width: 100%;"></span>
 <body>
     <div class="content">
         <p style="line-height:116%; font-size:14pt; margin: 0px;">
-            <span style="font-weight:bold">COTIZACIÓN</span>
+            <span style="font-weight:bold">RETENCIÓN</span>
         </p>
         <p>
             <span style="-aw-import:ignore">&#xa0;</span>
@@ -23,13 +45,11 @@
         <p style="margin-bottom:0pt; text-align:justify; line-height:normal">
             <span id="ClientName" style="font-weight:bold">JESÚS SANTOS ANTONIO</span>
             <span style="font-weight:bold; -aw-import:spaces">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;</span>
-            <span style="font-weight:bold; font-style:italic">(AQUÍ VA EL NOMBRE DEL CLIENTE).</span>
         </p>
         <p style="margin-bottom:0pt; text-align:justify; line-height:normal">
             <span id="CompanyClient">JESUS SANTOS</span>
             <span style="-aw-import:spaces">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;</span>
             <span style="-aw-import:spaces">&#xa0;</span>
-            <span style="font-weight:bold; font-style:italic">(AQUÍ VA EL NOMBRE DE LA EMPRESA O RAZÓN SOCIAL).</span>
         </p>
         <p style="margin-bottom:0pt; text-align:justify; line-height:normal">
             <span style="-aw-import:ignore">&#xa0;</span>
@@ -100,10 +120,10 @@
                     <td id="isr" style="width:55pt; padding: 5.4pt; vertical-align:top; text-align:right;"></td>
                 </tr>
                 <tr style="height:13pt">
-                    <td colspan="5" style="width:368.8pt; padding: 5.4pt; vertical-align:top;">
+                    <td colspan="5" style="width:368.8pt; padding: 5.4pt; vertical-align:top; background-color:#f2f2f2;">
                         <p style="margin-bottom:0pt; font-size:9pt; font-weight:bold; text-align:right">Ret. IVA</p>
                     </td>
-                    <td id="retiva" style="width:55pt; padding: 5.4pt; vertical-align:top; text-align:right;"></td>
+                    <td id="retiva" style="width:55pt; padding: 5.4pt; vertical-align:top; background-color:#f2f2f2; text-align:right;"></td>
                 </tr>
                 <tr style="height:13pt">
                     <td colspan="5" style="width:368.8pt; padding: 5.4pt; vertical-align:top;">
@@ -121,6 +141,10 @@
         <span style="font-weight:bold; color:#0070c0;">&nbsp;</span>
     </p>
     
+    <span id="currency" style="font-family: Calibri; display: block; margin-bottom: 20px;">
+        <strong>Moneda:</strong> Pesos Mexicanos (MXN).
+    </span>
+
     <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
         <span style="font-weight:bold">CONDICIONES</span>
     </p>
@@ -142,7 +166,7 @@
             <span style="font-family:Calibri">o hasta agotar existencias.</span>
         </li>
         <li class="ListParagraph" style="margin-left:9.6pt; margin-bottom:0pt; text-align:justify; line-height:normal; padding-left:8.25pt; font-family:serif; -aw-font-family:'Symbol'; -aw-font-weight:normal; -aw-number-format:''">
-            <span style="font-family:Calibri">Precios en pesos mexicanos, sujetos a cambios sin previo aviso.</span>
+            <span id="currency2" style="font-family:Calibri">Precios en pesos mexicanos, sujetos a cambios sin previo aviso.</span>
         </li>
         <li class="ListParagraph" style="margin-left:9.6pt; margin-bottom:0pt; text-align:justify; line-height:normal; padding-left:8.25pt; font-family:serif; -aw-font-family:'Symbol'; -aw-font-weight:normal; -aw-number-format:''">
             <span style="font-family:Calibri">Pago anticipado, de contado, excepto cuando se especifique lo contrario.</span>

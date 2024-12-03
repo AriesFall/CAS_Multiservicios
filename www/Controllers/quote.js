@@ -56,12 +56,44 @@ async function createQuote(event) {
   const clientId = new URLSearchParams(window.location.search).get('clientId');
 
   if (!noCode) {
-      alert('Por favor selecciona un código válido.');
-      return;
+    alert('Por favor selecciona un código válido.');
+    return;
   }
 
-  const quoteData = {
-      quoteName: "COT 0000-CMS0924",
+  try {
+    const response = await fetch(allQuotes_route, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al obtener las cotizaciones existentes.');
+    }
+
+    const quotes = await response.json();
+
+    let maxNumber = 0;
+    quotes.forEach(quote => {
+      const match = quote.QuoteName.match(/COT (\d+)-CMS/);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (num > maxNumber) maxNumber = num;
+      }
+    });
+
+    const nextNumber = (maxNumber + 1).toString().padStart(3, '0');
+
+    const now = new Date();
+    const day = now.getDate().toString().padStart(2, '0');
+    const year = now.getFullYear().toString().slice(-2);
+    const dateSuffix = `${day}${year}`;
+
+    const quoteName = `COT ${nextNumber}-CMS${dateSuffix}`;
+
+    const quoteData = {
+      quoteName,
       status: 1,
       typeQuote: parseInt(typeQuote),
       clientId,
@@ -71,38 +103,37 @@ async function createQuote(event) {
       amount: parseInt(amount),
       currency: parseInt(currency),
       percentageIVA: parseInt(percentageIVA),
-  };
+    };
 
-  try {
-      const response = await fetch(addQuote_route, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(quoteData),
-      });
+    const createResponse = await fetch(addQuote_route, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(quoteData),
+    });
 
-      if (!response.ok) {
-          throw new Error('Error en la solicitud: ' + response.statusText);
-      }
+    if (!createResponse.ok) {
+      throw new Error('Error al crear la cotización.');
+    }
 
-      const result = await response.json();
-      console.log('Cotización registrada:', result);
+    const result = await createResponse.json();
+    console.log('Cotización registrada:', result);
 
-      const quoteId = result.id;
+    const quoteId = result.id;
 
-      if (typeQuote === '1') {
-          window.location.href = `cotizacion-vista2.html?clientId=${clientId}&quoteId=${quoteId}`;
-      } else if (typeQuote === '2') {
-          window.location.href = `cotizacion-vista3.html?clientId=${clientId}&quoteId=${quoteId}`;
-      } else {
-          console.error('Valor inesperado para typeQuote:', typeQuote);
-      }
+    // Redirigir según el tipo de cotización
+    if (typeQuote === '1') {
+      window.location.href = `cotizacion-vista2.html?clientId=${clientId}&quoteId=${quoteId}`;
+    } else if (typeQuote === '2') {
+      window.location.href = `cotizacion-vista3.html?clientId=${clientId}&quoteId=${quoteId}`;
+    } else {
+      console.error('Valor inesperado para typeQuote:', typeQuote);
+    }
   } catch (error) {
-      console.error('Error:', error);
+    console.error('Error:', error);
   }
 }
-
 
 async function loadQuotesTable() {
     try {
